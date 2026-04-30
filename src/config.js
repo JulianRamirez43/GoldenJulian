@@ -12,12 +12,12 @@ export const CONFIG = {
 
   // ── Firebase ──────────────────────────────────────────────
   FIREBASE_CONFIG: {
-    apiKey:            'AIzaSyAxTyDOPzOPkWHgLu7iy4lcCxbRyxG_Akk',
-    authDomain:        'golden-julian.firebaseapp.com',
-    projectId:         'golden-julian',
-    storageBucket:     'golden-julian.firebasestorage.app',
-    messagingSenderId: '599121397465',
-    appId:             '1:599121397465:web:d7f3022883cf58e560a0c8',
+    apiKey:            process.env.API_KEY_FIREBASE,
+    authDomain:        process.env.AUTH_DOMAIN,
+    projectId:         process.env.PROJECT_ID,
+    storageBucket:     process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING_SENDER_ID,
+    appId:             process.env.APP_ID,
   },
   COLECCION_JOYAS: 'joyas',
 
