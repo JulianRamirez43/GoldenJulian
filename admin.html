@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Golden Julian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Variables ─────────────────────────────────────── */
+    :root {
+      --oro:        #d4af37;
+      --oro-oscuro: #b8860b;
+      --oro-suave:  #fff9e6;
+      --negro:      #111111;
+      --gris-1:     #333333;
+      --gris-2:     #666666;
+      --gris-3:     #dddddd;
+      --fondo:      #faf8f4;
+      --blanco:     #ffffff;
+      --rojo:       #e05555;
+      --verde:      #2ecc71;
+      --font-d:     'Cormorant Garamond', serif;
+      --font-b:     'Jost', sans-serif;
+      --radio:      10px;
+      --sombra:     0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-b); background: var(--fondo); color: var(--gris-1); min-height: 100vh; }
+    img  { display: block; max-width: 100%; }
+
+    /* ── LOGIN ─────────────────────────────────────────── */
+    #pantalla-login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--negro);
+    }
+
+    .login-card {
+      background: var(--blanco);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .login-card h1 {
+      font-family: var(--font-d);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--negro);
+      margin-bottom: 4px;
+    }
+
+    .login-card p {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--oro-oscuro);
+      margin-bottom: 32px;
+    }
+
+    .campo {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--gris-3);
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .campo:focus { border-color: var(--oro); }
+
+    .btn-login {
+      width: 100%;
+      background: var(--negro);
+      color: var(--blanco);
+      border: none;
+      padding: 14px;
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+      margin-top: 6px;
+    }
+
+    .btn-login:hover { background: var(--oro-oscuro); }
+
+    .error-login {
+      color: var(--rojo);
+      font-size: 0.85rem;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+
+    /* ── ADMIN LAYOUT ──────────────────────────────────── */
+    #pantalla-admin { display: none; }
+
+    .admin-header {
+      background: var(--negro);
+      color: var(--oro);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-header h1 {
+      font-family: var(--font-d);
+      font-size: 1.3rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+    }
+
+    .admin-header-right { display: flex; align-items: center; gap: 16px; }
+
+    .usuario-email {
+      font-size: 0.8rem;
+      color: rgba(212,175,55,0.6);
+    }
+
+    .btn-salir {
+      background: transparent;
+      border: 1px solid rgba(212,175,55,0.4);
+      color: var(--oro);
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-family: var(--font-b);
+      transition: all 0.2s;
+    }
+
+    .btn-salir:hover { background: rgba(212,175,55,0.1); }
+
+    .admin-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* ── STATS ─────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--blanco);
+      border-radius: var(--radio);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--sombra);
+    }
+
+    .stat-card .stat-numero {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--oro-oscuro);
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.75rem;
+      color: var(--gris-2);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    /* ── TOOLBAR ───────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar h2 {
+      font-family: var(--font-d);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--negro);
+    }
+
+    .btn-nuevo {
+      background: var(--oro);
+      color: var(--blanco);
+      border: none;
+      padding: 10px 22px;
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-nuevo:hover { background: var(--oro-oscuro); }
+
+    /* ── TABLA ─────────────────────────────────────────── */
+    .tabla-wrap {
+      background: var(--blanco);
+      border-radius: var(--radio);
+      box-shadow: var(--sombra);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--negro);
+      color: var(--oro);
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f5f5f5;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover { background: var(--oro-suave); }
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      color: var(--gris-1);
+      vertical-align: middle;
+    }
+
+    .img-mini {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .badge-disponible  { background: #eafaf2; color: #1e8a4a; }
+    .badge-agotado     { background: #fdecea; color: var(--rojo); }
+
+    .acciones { display: flex; gap: 8px; }
+
+    .btn-accion {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-b);
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .btn-accion:hover { opacity: 0.8; }
+    .btn-editar   { background: #e8f0fe; color: #1a56db; }
+    .btn-eliminar { background: #fdecea; color: var(--rojo); }
+
+    .cargando-tabla {
+      text-align: center;
+      padding: 60px;
+      color: var(--gris-2);
+    }
+
+    .spinner {
+      width: 32px; height: 32px;
+      border: 2px solid var(--gris-3);
+      border-top-color: var(--oro);
+      border-radius: 50%;
+      animation: girar 0.7s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    /* ── MODAL FORM ────────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+
+    .overlay.oculto { display: none; }
+
+    .form-card {
+      background: var(--blanco);
+      border-radius: 16px;
+      padding: 36px;
+      width: 92%;
+      max-width: 620px;
+      max-height: 92vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-card h3 {
+      font-family: var(--font-d);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 24px;
+      color: var(--negro);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-grupo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-grupo.full { grid-column: 1 / -1; }
+
+    .form-grupo label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--gris-2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .form-grupo input,
+    .form-grupo textarea,
+    .form-grupo select {
+      padding: 10px 14px;
+      border: 1.5px solid var(--gris-3);
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--blanco);
+    }
+
+    .form-grupo input:focus,
+    .form-grupo textarea:focus,
+    .form-grupo select:focus { border-color: var(--oro); }
+
+    .form-grupo textarea { resize: vertical; min-height: 80px; }
+
+    .categorias-check {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .check-tag {
+      padding: 6px 14px;
+      border: 1.5px solid var(--gris-3);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--gris-2);
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .check-tag.activo {
+      background: var(--negro);
+      color: var(--blanco);
+      border-color: var(--negro);
+    }
+
+    .preview-foto {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: var(--radio);
+      margin-top: 8px;
+      display: none;
+      border: 1px solid var(--gris-3);
+    }
+
+    .form-botones {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn-cancelar {
+      background: none;
+      border: 1.5px solid var(--gris-3);
+      padding: 10px 22px;
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--gris-1);
+      transition: border-color 0.2s;
+    }
+
+    .btn-cancelar:hover { border-color: var(--gris-1); }
+
+    .btn-guardar {
+      background: var(--negro);
+      color: var(--blanco);
+      border: none;
+      padding: 10px 28px;
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-guardar:hover { background: var(--oro-oscuro); }
+    .btn-guardar:disabled { background: var(--gris-3); cursor: not-allowed; }
+
+    .btn-cerrar-form {
+      position: absolute; top: 16px; right: 20px;
+      font-size: 1.6rem; cursor: pointer;
+      color: var(--gris-2); background: none; border: none;
+      line-height: 1;
+    }
+
+    /* ── CONFIRM DIALOG ────────────────────────────────── */
+    .confirm-card {
+      background: var(--blanco);
+      border-radius: 16px;
+      padding: 36px;
+      width: 92%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .confirm-card h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--negro); }
+    .confirm-card p  { font-size: 0.9rem; color: var(--gris-2); margin-bottom: 24px; }
+
+    .confirm-botones { display: flex; gap: 12px; justify-content: center; }
+
+    .btn-confirmar-eliminar {
+      background: var(--rojo);
+      color: var(--blanco);
+      border: none;
+      padding: 10px 24px;
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-confirmar-eliminar:hover { opacity: 0.85; }
+
+    /* ── TOAST ─────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--negro);
+      color: var(--blanco);
+      padding: 12px 20px;
+      border-radius: var(--radio);
+      font-size: 0.85rem;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.visible { opacity: 1; transform: translateY(0); }
+    .toast.exito   { border-left: 4px solid var(--verde); }
+    .toast.error   { border-left: 4px solid var(--rojo); }
+
+    @media (max-width: 640px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .admin-header { padding: 0 16px; }
+      .admin-body { padding: 20px 16px; }
+      thead th:nth-child(3),
+      tbody td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     PANTALLA DE LOGIN
+═══════════════════════════════════════════════════════ -->
+<div id="pantalla-login">
+  <div class="login-card">
+    <h1>Golden Julian</h1>
+    <p>Panel de Administración</p>
+    <input id="inp-email"    class="campo" type="email"    placeholder="Correo electrónico">
+    <input id="inp-password" class="campo" type="password" placeholder="Contraseña">
+    <button class="btn-login" id="btn-login">Ingresar</button>
+    <p class="error-login" id="error-login"></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PANTALLA ADMIN
+═══════════════════════════════════════════════════════ -->
+<div id="pantalla-admin">
+
+  <header class="admin-header">
+    <h1>✦ Admin Panel</h1>
+    <div class="admin-header-right">
+      <span class="usuario-email" id="usuario-email"></span>
+      <button class="btn-salir" id="btn-salir">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="admin-body">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-numero" id="stat-total">—</div>
+        <div class="stat-label">Total joyas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-numero" id="stat-disponibles">—</div>
+        <div class="stat-label">Disponibles</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-numero" id="stat-agotadas">—</div>
+        <div class="stat-label">Agotadas</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <h2>Colección de Joyas</h2>
+      <button class="btn-nuevo" id="btn-nueva-joya">+ Nueva Joya</button>
+    </div>
+
+    <!-- Tabla -->
+    <div class="tabla-wrap">
+      <div class="cargando-tabla" id="cargando-tabla">
+        <div class="spinner"></div>
+        <p>Cargando joyas…</p>
+      </div>
+      <table id="tabla-joyas" style="display:none;">
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Nombre</th>
+            <th>Categorías</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-joyas"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     MODAL — FORMULARIO JOYA
+═══════════════════════════════════════════════════════ -->
+<div id="overlay-form" class="overlay oculto">
+  <div class="form-card">
+    <button class="btn-cerrar-form" id="btn-cerrar-form">&times;</button>
+    <h3 id="form-titulo">Nueva Joya</h3>
+
+    <div class="form-grid">
+      <div class="form-grupo full">
+        <label>Nombre</label>
+        <input id="f-nombre" type="text" placeholder="Ej: Manilla San Benito ORO 18k">
+      </div>
+
+      <div class="form-grupo">
+        <label>Precio (COP)</label>
+        <input id="f-precio" type="number" placeholder="1394000">
+      </div>
+
+      <div class="form-grupo">
+        <label>Disponibilidad</label>
+        <select id="f-disponible">
+          <option value="true">✅ Disponible</option>
+          <option value="false">❌ Agotada</option>
+        </select>
+      </div>
+
+      <div class="form-grupo full">
+        <label>Descripción</label>
+        <textarea id="f-descripcion" placeholder="Descripción opcional de la joya…"></textarea>
+      </div>
+
+      <div class="form-grupo full">
+        <label>URL Foto Principal</label>
+        <input id="f-foto" type="url" placeholder="https://...">
+        <img id="preview-foto" class="preview-foto" alt="Preview">
+      </div>
+
+      <div class="form-grupo full">
+        <label>URLs Galería (una por línea)</label>
+        <textarea id="f-galeria" placeholder="https://foto1.jpg&#10;https://foto2.jpg"></textarea>
+      </div>
+
+      <div class="form-grupo full">
+        <label>Categorías</label>
+        <div class="categorias-check" id="categorias-check">
+          <span class="check-tag" data-val="manilla">Manilla</span>
+          <span class="check-tag" data-val="anillo">Anillo</span>
+          <span class="check-tag" data-val="topos">Topos</span>
+          <span class="check-tag" data-val="oro">Oro 18k</span>
+          <span class="check-tag" data-val="laminado">Oro Laminado</span>
+          <span class="check-tag" data-val="plata">Plata</span>
+          <span class="check-tag" data-val="neopreno">Neopreno</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-botones">
+      <button class="btn-cancelar" id="btn-cancelar-form">Cancelar</button>
+      <button class="btn-guardar" id="btn-guardar">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     MODAL — CONFIRMAR ELIMINAR
+═══════════════════════════════════════════════════════ -->
+<div id="overlay-confirm" class="overlay oculto">
+  <div class="confirm-card">
+    <h3>¿Eliminar esta joya?</h3>
+    <p id="confirm-nombre">Esta acción no se puede deshacer.</p>
+    <div class="confirm-botones">
+      <button class="btn-cancelar" id="btn-cancelar-confirm">Cancelar</button>
+      <button class="btn-confirmar-eliminar" id="btn-confirmar-eliminar">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import {
+  getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ── Firebase init ────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            'AIzaSyAxTyDOPzOPkWHgLu7iy4lcCxbRyxG_Akk',
+  authDomain:        'golden-julian.firebaseapp.com',
+  projectId:         'golden-julian',
+  storageBucket:     'golden-julian.firebasestorage.app',
+  messagingSenderId: '599121397465',
+  appId:             '1:599121397465:web:d7f3022883cf58e560a0c8',
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ── Estado ───────────────────────────────────────────────
+let joyas         = [];
+let editandoId    = null;
+let eliminandoId  = null;
+
+// ── Refs DOM ─────────────────────────────────────────────
+const pantallaLogin = document.getElementById('pantalla-login');
+const pantallaAdmin = document.getElementById('pantalla-admin');
+const errorLogin    = document.getElementById('error-login');
+const toast         = document.getElementById('toast');
+
+// ── Auth ─────────────────────────────────────────────────
+onAuthStateChanged(auth, usuario => {
+  if (usuario) {
+    pantallaLogin.style.display = 'none';
+    pantallaAdmin.style.display = 'block';
+    document.getElementById('usuario-email').textContent = usuario.email;
+    cargarJoyas();
+  } else {
+    pantallaLogin.style.display  = 'flex';
+    pantallaAdmin.style.display  = 'none';
+  }
+});
+
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const email    = document.getElementById('inp-email').value.trim();
+  const password = document.getElementById('inp-password').value;
+  errorLogin.textContent = '';
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (e) {
+    errorLogin.textContent = 'Correo o contraseña incorrectos.';
+  }
+});
+
+document.getElementById('inp-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-login').click();
+});
+
+document.getElementById('btn-salir').addEventListener('click', () => signOut(auth));
+
+// ── Cargar joyas ─────────────────────────────────────────
+async function cargarJoyas() {
+  document.getElementById('cargando-tabla').style.display = 'block';
+  document.getElementById('tabla-joyas').style.display    = 'none';
+
+  const snap = await getDocs(collection(db, 'joyas'));
+  joyas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  actualizarStats();
+  renderTabla();
+
+  document.getElementById('cargando-tabla').style.display = 'none';
+  document.getElementById('tabla-joyas').style.display    = 'table';
+}
+
+function actualizarStats() {
+  const disponibles = joyas.filter(j => j.disponible !== false).length;
+  document.getElementById('stat-total').textContent       = joyas.length;
+  document.getElementById('stat-disponibles').textContent = disponibles;
+  document.getElementById('stat-agotadas').textContent    = joyas.length - disponibles;
+}
+
+function renderTabla() {
+  const tbody = document.getElementById('tbody-joyas');
+  tbody.innerHTML = '';
+
+  if (joyas.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#888">
+      No hay joyas. ¡Agrega la primera!
+    </td></tr>`;
+    return;
+  }
+
+  joyas.forEach(joya => {
+    const disponible = joya.disponible !== false;
+    const cats = Array.isArray(joya.categorias) ? joya.categorias.join(', ') : '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><img class="img-mini" src="${joya.foto_principal || ''}" alt="${joya.nombre}" onerror="this.src='https://placehold.co/52x52/f9f5eb/b8860b?text=?'"></td>
+      <td><strong>${joya.nombre}</strong></td>
+      <td style="font-size:0.8rem;color:#666">${cats}</td>
+      <td>$${(joya.precio || 0).toLocaleString('es-CO')}</td>
+      <td>
+        <span class="badge ${disponible ? 'badge-disponible' : 'badge-agotado'}">
+          ${disponible ? 'Disponible' : 'Agotada'}
+        </span>
+      </td>
+      <td>
+        <div class="acciones">
+          <button class="btn-accion btn-editar"   data-id="${joya.id}">Editar</button>
+          <button class="btn-accion btn-eliminar" data-id="${joya.id}">Eliminar</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Eventos
+  tbody.querySelectorAll('.btn-editar').forEach(btn =>
+    btn.addEventListener('click', () => abrirFormEditar(btn.dataset.id))
+  );
+  tbody.querySelectorAll('.btn-eliminar').forEach(btn =>
+    btn.addEventListener('click', () => abrirConfirmEliminar(btn.dataset.id))
+  );
+}
+
+// ── Formulario ───────────────────────────────────────────
+const overlayForm = document.getElementById('overlay-form');
+
+function abrirFormNuevo() {
+  editandoId = null;
+  document.getElementById('form-titulo').textContent = 'Nueva Joya';
+  limpiarForm();
+  overlayForm.classList.remove('oculto');
+}
+
+function abrirFormEditar(id) {
+  editandoId = id;
+  const joya = joyas.find(j => j.id === id);
+  if (!joya) return;
+
+  document.getElementById('form-titulo').textContent = 'Editar Joya';
+  document.getElementById('f-nombre').value      = joya.nombre       || '';
+  document.getElementById('f-precio').value      = joya.precio       || '';
+  document.getElementById('f-descripcion').value = joya.descripcion  || '';
+  document.getElementById('f-foto').value        = joya.foto_principal || '';
+  document.getElementById('f-disponible').value  = joya.disponible === false ? 'false' : 'true';
+  document.getElementById('f-galeria').value     =
+    Array.isArray(joya.fotos_galeria) ? joya.fotos_galeria.join('\n') : '';
+
+  // Preview
+  mostrarPreview(joya.foto_principal);
+
+  // Categorías
+  document.querySelectorAll('.check-tag').forEach(tag => {
+    tag.classList.toggle('activo', (joya.categorias || []).includes(tag.dataset.val));
+  });
+
+  overlayForm.classList.remove('oculto');
+}
+
+function cerrarForm() {
+  overlayForm.classList.add('oculto');
+  limpiarForm();
+}
+
+function limpiarForm() {
+  ['f-nombre','f-precio','f-descripcion','f-foto','f-galeria'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-disponible').value = 'true';
+  document.querySelectorAll('.check-tag').forEach(t => t.classList.remove('activo'));
+  document.getElementById('preview-foto').style.display = 'none';
+}
+
+function mostrarPreview(url) {
+  const img = document.getElementById('preview-foto');
+  if (url && url.startsWith('http')) {
+    img.src = url;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+}
+
+document.getElementById('f-foto').addEventListener('input', e => mostrarPreview(e.target.value));
+
+document.querySelectorAll('.check-tag').forEach(tag => {
+  tag.addEventListener('click', () => tag.classList.toggle('activo'));
+});
+
+document.getElementById('btn-nueva-joya').addEventListener('click', abrirFormNuevo);
+document.getElementById('btn-cerrar-form').addEventListener('click', cerrarForm);
+document.getElementById('btn-cancelar-form').addEventListener('click', cerrarForm);
+overlayForm.addEventListener('click', e => { if (e.target === overlayForm) cerrarForm(); });
+
+document.getElementById('btn-guardar').addEventListener('click', async () => {
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const precio = parseInt(document.getElementById('f-precio').value);
+
+  if (!nombre || !precio) {
+    mostrarToast('Nombre y precio son obligatorios.', 'error');
+    return;
+  }
+
+  const categorias = [...document.querySelectorAll('.check-tag.activo')].map(t => t.dataset.val);
+  const galeriaRaw = document.getElementById('f-galeria').value.trim();
+  const fotos_galeria = galeriaRaw
+    ? galeriaRaw.split('\n').map(u => u.trim()).filter(u => u.startsWith('http'))
+    : [];
+
+  const datos = {
+    nombre,
+    precio,
+    descripcion:    document.getElementById('f-descripcion').value.trim(),
+    foto_principal: document.getElementById('f-foto').value.trim(),
+    disponible:     document.getElementById('f-disponible').value === 'true',
+    categorias,
+    fotos_galeria,
+  };
+
+  const btn = document.getElementById('btn-guardar');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+
+  try {
+    if (editandoId) {
+      await updateDoc(doc(db, 'joyas', editandoId), datos);
+      mostrarToast('Joya actualizada correctamente ✓', 'exito');
+    } else {
+      await addDoc(collection(db, 'joyas'), datos);
+      mostrarToast('Joya agregada correctamente ✓', 'exito');
+    }
+    cerrarForm();
+    await cargarJoyas();
+  } catch (e) {
+    mostrarToast('Error al guardar: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Guardar';
+  }
+});
+
+// ── Eliminar ─────────────────────────────────────────────
+const overlayConfirm = document.getElementById('overlay-confirm');
+
+function abrirConfirmEliminar(id) {
+  eliminandoId = id;
+  const joya = joyas.find(j => j.id === id);
+  document.getElementById('confirm-nombre').textContent =
+    `"${joya?.nombre}" será eliminada permanentemente.`;
+  overlayConfirm.classList.remove('oculto');
+}
+
+document.getElementById('btn-cancelar-confirm').addEventListener('click', () => {
+  overlayConfirm.classList.add('oculto');
+  eliminandoId = null;
+});
+
+overlayConfirm.addEventListener('click', e => {
+  if (e.target === overlayConfirm) {
+    overlayConfirm.classList.add('oculto');
+    eliminandoId = null;
+  }
+});
+
+document.getElementById('btn-confirmar-eliminar').addEventListener('click', async () => {
+  if (!eliminandoId) return;
+  try {
+    await deleteDoc(doc(db, 'joyas', eliminandoId));
+    overlayConfirm.classList.add('oculto');
+    mostrarToast('Joya eliminada correctamente ✓', 'exito');
+    eliminandoId = null;
+    await cargarJoyas();
+  } catch (e) {
+    mostrarToast('Error al eliminar: ' + e.message, 'error');
+  }
+});
+
+// ── Toast ────────────────────────────────────────────────
+function mostrarToast(msg, tipo = 'exito') {
+  toast.textContent = msg;
+  toast.className   = `toast ${tipo} visible`;
+  setTimeout(() => toast.classList.remove('visible'), 3000);
+}
+
+// ── Escape cierra modales ────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    cerrarForm();
+    overlayConfirm.classList.add('oculto');
+  }
+});
+</script>
+
+</body>
+</html>

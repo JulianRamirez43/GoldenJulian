@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golden Julian — Joyería Exclusiva</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+  <!-- ── HEADER ────────────────────────────────────────── -->
+  <header>
+    <h1>Golden Manillas</h1>
+    <p>Catálogo Exclusivo</p>
+  </header>
+
+  <!-- ── BUSCADOR + ORDEN ──────────────────────────────── -->
+  <div class="buscador-container">
+    <button id="btn-buscar" class="lupa-btn">🔍 Buscar y Filtrar</button>
+    <div class="orden-botones">
+      <button id="btn-orden-asc"  class="btn-orden" data-orden="asc">↑ Precio</button>
+      <button id="btn-orden-desc" class="btn-orden" data-orden="desc">↓ Precio</button>
+    </div>
+  </div>
+
+  <!-- ── PANEL DE FILTROS ──────────────────────────────── -->
+  <section id="panel-filtros" class="panel-filtros oculto">
+    <div id="columnas-filtros" class="columnas-filtros"></div>
+    <button id="btn-reset" class="btn-limpiar">Limpiar filtros</button>
+  </section>
+
+  <!-- ── CATÁLOGO ───────────────────────────────────────── -->
+  <main id="app">
+    <div id="contenedor-joyas" class="grid-joyas">
+      <div class="cargando">
+        <div class="spinner"></div>
+        <p>Cargando colección…</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── ¿POR QUÉ ELEGIRNOS? ───────────────────────────── -->
+  <section class="seccion-por-que">
+    <h2 class="por-que-titulo">¿Por qué elegirnos?</h2>
+    <div class="por-que-grid">
+      <div class="por-que-card">
+        <div class="por-que-icono">✦</div>
+        <h3>Materiales Certificados</h3>
+        <p>Trabajamos exclusivamente con ORO 18k, PLATA LEY 925 y ORO LAMINADO 18k,materiales de primera calidad, garantizando durabilidad y brillo.</p>
+      </div>
+      <div class="por-que-card">
+        <div class="por-que-icono">🛡</div>
+        <h3>Garantía de Autenticidad</h3>
+        <p>Cada joya viene con garantia de autenticidad. Respaldamos la calidad de nuestras joyas:<br><strong>ORO 18k :</strong> GARANTIA DE POR VIDA<br><strong>PLATA :</strong> GARANTIA DE POR VIDA<br><strong>ORO LAMINADO 18k :</strong> GARANTIA DE 1 AÑO</p>
+      </div>
+      <div class="por-que-card">
+        <div class="por-que-icono">🚚</div>
+        <h3>Envío a Todo Colombia</h3>
+        <p>Hacemos envíos seguros a cualquier ciudad del país. Tu joya llega protegida y en el menor tiempo posible.</p>
+      </div>
+      <div class="por-que-card">
+        <div class="por-que-icono">💬</div>
+        <h3>Atención Personalizada</h3>
+        <p>Te asesoramos por WhatsApp para encontrar la joya perfecta. Respondemos rápido y con gusto.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MODAL DE DETALLE ───────────────────────────────── -->
+  <div id="modal-detalle" class="modal oculto" role="dialog" aria-modal="true">
+    <div class="modal-contenido">
+      <button id="cerrar-modal" class="btn-cerrar" aria-label="Cerrar">&times;</button>
+      <div class="detalle-grid">
+        <div class="galeria-fotos">
+          <div class="foto-zoom-wrap">
+            <img id="foto-principal-modal" src="" alt="Foto Principal">
+          </div>
+          <div id="miniaturas" class="miniaturas-contenedor"></div>
+        </div>
+        <div class="detalle-info">
+          <h2 id="titulo-modal"></h2>
+          <p id="precio-modal" class="precio"></p>
+          <p id="descripcion-modal"></p>
+          <div id="tags-modal" class="tags-modal"></div>
+          <hr>
+          <div class="botones-modal">
+            <button id="btn-add-carrito" class="btn-add-carrito">🛒 Añadir al carrito</button>
+            <button id="btn-comprar-wpp" class="btn-comprar">Comprar por WhatsApp</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARRITO FLOTANTE ───────────────────────────────── -->
+  <div id="btn-carrito-flotante" class="carrito-flotante" role="button" aria-label="Abrir carrito">
+    🛒 <span id="contador-carrito">0</span>
+  </div>
+
+  <!-- ── BOTÓN WHATSAPP FLOTANTE ────────────────────────── -->
+  <a href="https://wa.me/573005240150?text=Hola%20GoldenManillas%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+     target="_blank"
+     class="wpp-flotante"
+     aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- ── PANEL DEL CARRITO ──────────────────────────────── -->
+  <aside id="panel-carrito" class="panel-carrito oculto" aria-label="Carrito de compras">
+    <div class="carrito-header">
+      <h3>Tu Carrito</h3>
+      <button id="cerrar-carrito" class="btn-cerrar" aria-label="Cerrar carrito">&times;</button>
+    </div>
+    <div id="items-carrito" class="items-carrito"></div>
+    <div class="carrito-footer">
+      <div class="total-contenedor">
+        <span>Total</span>
+        <span id="total-precio">$0</span>
+      </div>
+      <p class="carrito-ttl-nota">El carrito se guarda por 24 horas</p>
+      <button id="btn-finalizar-wpp" class="btn-comprar">Pedir por WhatsApp</button>
+    </div>
+  </aside>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
