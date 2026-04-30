@@ -6,7 +6,7 @@ export const CONFIG = {
   // ── Negocio ──────────────────────────────────────────────
   NOMBRE_TIENDA: 'Golden Manillas',
   SLOGAN: 'Catálogo Exclusivo',
-  WHATSAPP_NUMERO: '573005240150',
+  WHATSAPP_NUMERO: '573003672216',
   WHATSAPP_MENSAJE_BASE: 'Hola GoldenManillas, me interesa obtener más información de:',
 
   // ── Firebase ──────────────────────────────────────────────
