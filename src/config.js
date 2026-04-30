@@ -11,14 +11,24 @@ export const CONFIG = {
   WHATSAPP_MENSAJE_BASE: 'Hola GoldenManillas, me interesa obtener más información de:',
 
   // ── Firebase ──────────────────────────────────────────────
-  FIREBASE_CONFIG: {
-    apiKey:            process.env.API_KEY_FIREBASE,
-    authDomain:        process.env.AUTH_DOMAIN,
-    projectId:         process.env.PROJECT_ID,
-    storageBucket:     process.env.STORAGE_BUCKET,
-    messagingSenderId: process.env.MESSAGING_SENDER_ID,
-    appId:             process.env.APP_ID,
+  //FIREBASE_CONFIG: {
+    //apiKey:            process.env.API_KEY_FIREBASE,
+    //authDomain:        process.env.AUTH_DOMAIN,
+    //projectId:         process.env.PROJECT_ID,
+    //storageBucket:     process.env.STORAGE_BUCKET,
+    //messagingSenderId: process.env.MESSAGING_SENDER_ID,
+    //appId:             process.env.APP_ID,
+ // },
+
+  FIREBASE_CONFIG = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
   },
+
   COLECCION_JOYAS: 'joyas',
 
   // ── Catálogo ──────────────────────────────────────────────
