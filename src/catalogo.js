@@ -6,10 +6,12 @@ import { db }           from './conexion.js';
 import { abrirDetalle } from './modal.js';
 import {
   collection, getDocs, query
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+} from 'firebase/firestore';
 
-const COLECCION  = 'joyas';
-const PLACEHOLDER = 'https://placehold.co/600x400/f9f5eb/b8860b?text=Sin+imagen';
+import { CONFIG } from './config.js';
+
+const COLECCION  = CONFIG.COLECCION_JOYAS;
+const PLACEHOLDER = CONFIG.PLACEHOLDER_IMG;
 
 // ── Estado global del catálogo ────────────────────────────
 let todasLasJoyas       = [];

@@ -5,9 +5,9 @@
 import { CONFIG }                        from './config.js';
 import { agregarAlCarrito, cerrarCarrito } from './carrito.js';
 
-const WHATSAPP_NUMERO       = '573005240150';
-const WHATSAPP_MENSAJE_BASE = 'Hola GoldenManillas, me interesa obtener más información de:';
-const PLACEHOLDER           = 'https://placehold.co/600x400/f9f5eb/b8860b?text=Sin+imagen';
+const WHATSAPP_NUMERO       = CONFIG.WHATSAPP_NUMERO;
+const WHATSAPP_MENSAJE_BASE = CONFIG.WHATSAPP_MENSAJE_BASE;
+const PLACEHOLDER           = CONFIG.PLACEHOLDER_IMG;
 
 const modal           = () => document.getElementById('modal-detalle');
 const imgPrincipal    = () => document.getElementById('foto-principal-modal');
