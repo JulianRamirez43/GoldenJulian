@@ -851,3 +851,27 @@ hr { border: none; border-top: 1px solid var(--color-gris-claro); }
   .por-que-grid { grid-template-columns: 1fr 1fr; }
   .buscador-container { flex-direction: column; }
 }
+
+/* ── BOTÓN INSTAGRAM FLOTANTE ─────────────────────────────── */
+.ig-flotante {
+  position: fixed;
+  bottom: 160px; /* <--- Lo ubicamos más arriba que el de WhatsApp */
+  right: var(--espacio-lg);
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); /* Color de Instagram */
+  color: var(--color-blanco);
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(220, 39, 67, 0.45);
+  z-index: 999;
+  transition: transform var(--transicion), box-shadow var(--transicion);
+  text-decoration: none;
+  font-size: 1.5rem; /* Tamaño ideal si usas un ícono */
+}
+
+.ig-flotante:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 22px rgba(220, 39, 67, 0.6);
+}
