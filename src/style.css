@@ -682,7 +682,7 @@ hr { border: none; border-top: 1px solid var(--color-gris-claro); }
 @media (max-width: 700px) {
   .detalle-grid { grid-template-columns: 1fr; }
   #foto-principal-modal { height: 260px; }
-  .grid-joyas { padding: var(--espacio-md); gap: var(--espacio-md); }
+  .grid-joyas { padding: var(--espacio-md); gap: var(--espacio-md); grid-template-columns: 1fr 1fr; }
   .panel-carrito { width: 100%; }
   header h1 { font-size: 2rem; }
   .columnas-filtros { grid-template-columns: 1fr; }
