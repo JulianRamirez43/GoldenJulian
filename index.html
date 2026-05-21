@@ -707,19 +707,36 @@
       display: flex;
       flex-direction: column;
     }
+    /* Gradiente en esquina para que la X siempre sea legible */
+    .modal-contenido::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 100px; height: 100px;
+      background: radial-gradient(ellipse at top right, rgba(0,0,0,0.55) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 15;
+    }
     .btn-cerrar {
       position: absolute;
-      top: 1.2rem; right: 1.2rem;
-      background: rgba(255,255,255,0.05);
-      color: var(--texto-muted);
-      border: 1px solid var(--gris-borde);
-      width: 36px; height: 36px;
+      top: 1rem; right: 1rem;
+      background: var(--oro);
+      color: var(--negro);
+      border: none;
+      width: 44px; height: 44px;
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-      z-index: 10;
+      font-size: 1.4rem;
+      font-weight: 700;
+      z-index: 20;
       transition: all 0.3s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      line-height: 1;
     }
-    .btn-cerrar:hover { background: rgba(255,255,255,0.1); color: var(--blanco); }
+    .btn-cerrar:hover {
+      background: var(--blanco);
+      transform: scale(1.1) rotate(90deg);
+    }
 
     /* Grid: lado izquierdo scrollable, lado derecho sticky */
     .detalle-grid {
@@ -863,27 +880,53 @@
     }
     .btn-comprar:hover { background: #1fad55; }
 
-    /* Responsive modal: en móvil apilar, y botones siguen al fondo */
+    /* Responsive modal: en móvil apilar, botones siempre fijos al fondo */
     @media (max-width: 768px) {
+      .modal { padding: 0; align-items: flex-end; }
       .modal-contenido {
         max-height: 95vh;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        width: 100%;
       }
       .detalle-grid {
         grid-template-columns: 1fr;
-        overflow-y: auto;
+        /* En móvil: galería arriba, info debajo — todo el grid es flex column */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        flex: 1;
       }
       .galeria-fotos {
+        /* Galería no crece, solo muestra la foto cuadrada y miniaturas */
         overflow-y: visible;
-      }
-      .detalle-info {
-        height: auto;
-        overflow: visible;
-        padding: 1.5rem;
-      }
-      .detalle-info-scroll {
-        overflow: visible;
+        flex-shrink: 0;
+        padding: 1rem;
       }
       .foto-zoom-wrap { aspect-ratio: 1 / 1; }
+      /* Info ocupa el espacio restante con los botones pegados */
+      .detalle-info {
+        flex: 1;
+        overflow: hidden;
+        padding: 1.2rem 1.2rem 0 1.2rem;
+        display: flex;
+        flex-direction: column;
+        height: 0; /* truco para que flex respete overflow */
+        min-height: 0;
+      }
+      .detalle-info-scroll {
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+        padding-bottom: 0.5rem;
+      }
+      .detalle-separador { flex-shrink: 0; }
+      .botones-modal {
+        flex-shrink: 0;
+        padding: 1rem 0 1.2rem;
+      }
     }
 
     /* ── CARRITO FLOTANTE ── */
@@ -1531,6 +1574,46 @@
     });
     fotoWrap.addEventListener('mouseleave', () => { fotoModal.style.transform = 'scale(1)'; });
   }
+
+  /* ── FIX: eliminar miniatura duplicada de la foto principal ── */
+  // Observa cuando main.js inyecta miniaturas y quita la que sea igual a la foto principal
+  const minContenedor = document.getElementById('miniaturas');
+  const fotoPrincipal = document.getElementById('foto-principal-modal');
+  if (minContenedor && fotoPrincipal) {
+    const dedupObserver = new MutationObserver(() => {
+      const srcPrincipal = fotoPrincipal.src;
+      if (!srcPrincipal) return;
+      const minis = minContenedor.querySelectorAll('img.miniatura');
+      minis.forEach(m => {
+        // Comparar por src normalizado
+        const a = m.src.split('?')[0];
+        const b = srcPrincipal.split('?')[0];
+        if (a === b && minis.length > 1) m.parentElement ? m.parentElement.remove() : m.remove();
+      });
+    });
+    dedupObserver.observe(minContenedor, { childList: true, subtree: true });
+
+    // También observar cambios en la foto principal
+    const fotoObserver = new MutationObserver(() => {
+      const srcPrincipal = fotoPrincipal.src;
+      if (!srcPrincipal) return;
+      const minis = minContenedor.querySelectorAll('img.miniatura');
+      minis.forEach(m => {
+        const a = m.src.split('?')[0];
+        const b = srcPrincipal.split('?')[0];
+        if (a === b && minis.length > 1) m.parentElement ? m.parentElement.remove() : m.remove();
+      });
+    });
+    fotoObserver.observe(fotoPrincipal, { attributes: true, attributeFilter: ['src'] });
+  }
+
+  /* ── TOAST CARRITO: escucha el botón de añadir si main.js no lo llama ── */
+  // Si main.js ya llama a mostrarToast(), esto no interfiere.
+  // Si no lo hace, lo capturamos aquí como respaldo.
+  document.getElementById('btn-add-carrito').addEventListener('click', () => {
+    const nombre = document.getElementById('titulo-modal')?.textContent || 'Joya';
+    mostrarToast('¡' + nombre + ' añadida!', 'Producto agregado a tu carrito');
+  });
   </script>
 </body>
 </html>
