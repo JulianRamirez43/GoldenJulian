@@ -2,6 +2,7 @@
 //  filtros.js — Panel de filtros y búsqueda
 // ============================================================
 
+
 import { CONFIG }         from './config.js';
 import { actualizarFiltros } from './catalogo.js';
 
