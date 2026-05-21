@@ -439,6 +439,11 @@
       background: var(--gris-borde);
     }
 
+    /* Fotos siempre cuadradas */
+    .tarjeta-img-wrap {
+      aspect-ratio: 1 / 1;
+    }
+
     .tarjeta-joya {
       background: var(--negro-card);
       overflow: hidden;
@@ -458,7 +463,6 @@
     .tarjeta-img-wrap {
       position: relative;
       overflow: hidden;
-      height: 320px;
       background: #0d0d0d;
     }
     .tarjeta-img-wrap img {
@@ -698,8 +702,10 @@
       max-width: 1000px;
       width: 100%;
       max-height: 90vh;
-      overflow-y: auto;
+      overflow: hidden;
       transition: transform 0.4s var(--ease-luxury);
+      display: flex;
+      flex-direction: column;
     }
     .btn-cerrar {
       position: absolute;
@@ -715,18 +721,23 @@
     }
     .btn-cerrar:hover { background: rgba(255,255,255,0.1); color: var(--blanco); }
 
+    /* Grid: lado izquierdo scrollable, lado derecho sticky */
     .detalle-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      flex: 1;
+      overflow: hidden;
     }
 
     .galeria-fotos {
       background: #0d0d0d;
       padding: 2rem;
+      overflow-y: auto;
     }
     .foto-zoom-wrap {
       overflow: hidden;
-      height: 400px;
+      /* Foto cuadrada en el modal */
+      aspect-ratio: 1 / 1;
       cursor: zoom-in;
       margin-bottom: 1rem;
     }
@@ -755,10 +766,18 @@
       border-color: var(--oro);
     }
 
+    /* Panel derecho: sticky, no hace scroll — botones siempre visibles */
     .detalle-info {
-      padding: 2.5rem;
+      padding: 2rem 2rem 0 2rem;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+    }
+    .detalle-info-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 1rem;
     }
     #titulo-modal {
       font-family: var(--font-display);
@@ -785,7 +804,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
     .tag-modal {
       font-size: 0.62rem;
@@ -799,13 +818,16 @@
     .detalle-separador {
       height: 1px;
       background: var(--gris-borde);
-      margin-bottom: 2rem;
+      margin: 0;
+      flex-shrink: 0;
     }
+    /* Botones siempre pegados al fondo, nunca desaparecen */
     .botones-modal {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      margin-top: auto;
+      padding: 1.5rem 0 2rem;
+      flex-shrink: 0;
     }
     .btn-add-carrito {
       background: var(--negro);
@@ -840,6 +862,29 @@
       transition: all 0.3s ease;
     }
     .btn-comprar:hover { background: #1fad55; }
+
+    /* Responsive modal: en móvil apilar, y botones siguen al fondo */
+    @media (max-width: 768px) {
+      .modal-contenido {
+        max-height: 95vh;
+      }
+      .detalle-grid {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      .galeria-fotos {
+        overflow-y: visible;
+      }
+      .detalle-info {
+        height: auto;
+        overflow: visible;
+        padding: 1.5rem;
+      }
+      .detalle-info-scroll {
+        overflow: visible;
+      }
+      .foto-zoom-wrap { aspect-ratio: 1 / 1; }
+    }
 
     /* ── CARRITO FLOTANTE ── */
     .carrito-flotante {
@@ -1012,25 +1057,52 @@
     /* ── TOAST ── */
     .toast {
       position: fixed;
-      bottom: 5rem; left: 50%;
-      transform: translateX(-50%) translateY(20px);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.85);
       background: var(--negro-card);
-      border: 1px solid var(--gris-borde);
+      border: 1px solid var(--oro);
       color: var(--blanco);
-      padding: 0.9rem 1.5rem;
-      font-size: 0.8rem;
-      letter-spacing: 0.05em;
+      padding: 1.8rem 2.5rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
       z-index: 5000;
       opacity: 0;
       transition: all 0.4s var(--ease-luxury);
       pointer-events: none;
-      white-space: nowrap;
       display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 0.75rem;
+      text-align: center;
+      min-width: 260px;
+      box-shadow: 0 0 60px rgba(212,175,55,0.25), 0 20px 60px rgba(0,0,0,0.5);
     }
-    .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast i { color: var(--oro); }
+    .toast.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .toast-icono {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--oro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--negro);
+    }
+    .toast-titulo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--blanco);
+    }
+    .toast-subtitulo {
+      font-size: 0.72rem;
+      color: var(--texto-muted);
+      letter-spacing: 0.05em;
+    }
 
     /* ── FOOTER ── */
     footer {
@@ -1083,7 +1155,6 @@
       .foto-zoom-wrap { height: 260px; }
       .panel-carrito { width: 100%; }
       .grid-joyas { grid-template-columns: repeat(2, 1fr); gap: 1px; }
-      .tarjeta-img-wrap { height: 220px; }
       .seccion-catalogo { padding: 3rem 1rem; }
       .barra-acciones { padding: 0.75rem 1rem; }
       .barra-logo { display: none; }
@@ -1091,8 +1162,12 @@
       #cursor, #cursor-ring { display: none; }
     }
     @media (max-width: 480px) {
-      .grid-joyas { grid-template-columns: 1fr; }
+      .grid-joyas { grid-template-columns: repeat(2, 1fr); }
       .por-que-grid { grid-template-columns: 1fr; }
+      .info-joya { padding: 0.75rem; }
+      .joya-nombre { font-size: 0.9rem; }
+      .joya-precio { font-size: 0.9rem; }
+      .btn-ver { padding: 0.5rem; font-size: 0.62rem; letter-spacing: 0.1em; }
     }
 
     /* ── SCROLL REVEAL ── */
@@ -1275,10 +1350,12 @@
           <div id="miniaturas" class="miniaturas-contenedor"></div>
         </div>
         <div class="detalle-info">
-          <h2 id="titulo-modal"></h2>
-          <p id="precio-modal"></p>
-          <p id="descripcion-modal"></p>
-          <div id="tags-modal"></div>
+          <div class="detalle-info-scroll">
+            <h2 id="titulo-modal"></h2>
+            <p id="precio-modal"></p>
+            <p id="descripcion-modal"></p>
+            <div id="tags-modal"></div>
+          </div>
           <div class="detalle-separador"></div>
           <div class="botones-modal">
             <button id="btn-add-carrito" class="btn-add-carrito">
@@ -1333,8 +1410,9 @@
 
   <!-- TOAST -->
   <div class="toast" id="toast">
-    <i class="fa-solid fa-check"></i>
-    <span id="toast-msg">Añadido al carrito</span>
+    <div class="toast-icono"><i class="fa-solid fa-check"></i></div>
+    <span class="toast-titulo" id="toast-msg">Añadido al carrito</span>
+    <span class="toast-subtitulo">La joya fue agregada exitosamente</span>
   </div>
 
   <!-- ══════════════════════════════
@@ -1432,11 +1510,13 @@
   });
 
   /* ── TOAST ── */
-  window.mostrarToast = function(msg) {
+  window.mostrarToast = function(msg, subtitulo) {
     const toast = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = msg;
+    document.getElementById('toast-msg').textContent = msg || 'Añadido al carrito';
+    const sub = toast.querySelector('.toast-subtitulo');
+    if (sub) sub.textContent = subtitulo || 'La joya fue agregada exitosamente';
     toast.classList.add('visible');
-    setTimeout(() => toast.classList.remove('visible'), 2800);
+    setTimeout(() => toast.classList.remove('visible'), 2500);
   };
 
   /* ── FOTO ZOOM ── */
