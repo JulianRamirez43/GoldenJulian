@@ -9,8 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  /*Prueba*/
-  
   <style>
     /* ── VARIABLES ── */
     :root {
@@ -882,52 +880,49 @@
     }
     .btn-comprar:hover { background: #1fad55; }
 
+
     /* Responsive modal: en móvil apilar, botones siempre fijos al fondo */
     @media (max-width: 768px) {
       .modal { padding: 0; align-items: flex-end; }
       .modal-contenido {
         max-height: 95vh;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
+        border-radius: 1.5rem 1.5rem 0 0; /* Bordes redondeados elegantes para móvil */
+        border: none;
         width: 100%;
       }
       .detalle-grid {
         grid-template-columns: 1fr;
-        /* En móvil: galería arriba, info debajo — todo el grid es flex column */
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow-y: auto; /* SOLUCIÓN 1: Permite deslizar las fotos y la info */
         flex: 1;
       }
       .galeria-fotos {
-        /* Galería no crece, solo muestra la foto cuadrada y miniaturas */
         overflow-y: visible;
         flex-shrink: 0;
-        padding: 1rem;
+        padding: 1.5rem 1.5rem 0.5rem 1.5rem;
       }
       .foto-zoom-wrap { aspect-ratio: 1 / 1; }
-      /* Info ocupa el espacio restante con los botones pegados */
+      
+      /* Hacemos que detalle-info comparta su contenido con el scroll principal */
       .detalle-info {
-        flex: 1;
-        overflow: hidden;
-        padding: 1.2rem 1.2rem 0 1.2rem;
-        display: flex;
-        flex-direction: column;
-        height: 0; /* truco para que flex respete overflow */
-        min-height: 0;
+        display: contents; 
       }
       .detalle-info-scroll {
-        flex: 1;
-        overflow-y: auto;
-        min-height: 0;
-        padding-bottom: 0.5rem;
-      }
-      .detalle-separador { flex-shrink: 0; }
-      .botones-modal {
+        padding: 0 1.5rem 1rem 1.5rem;
         flex-shrink: 0;
-        padding: 1rem 0 1.2rem;
+      }
+      .detalle-separador { display: none; } /* Se oculta para no estorbar a los botones fijos */
+      
+      /* SOLUCIÓN 2: Botones pegados al fondo de la pantalla siempre visibles */
+      .botones-modal {
+        position: sticky;
+        bottom: 0;
+        background: var(--negro-card); /* Mismo fondo de la tarjeta para no traslapar texto */
+        padding: 1rem 1.5rem 1.5rem 1.5rem;
+        flex-shrink: 0;
+        z-index: 100;
+        border-top: 1px solid var(--gris-borde);
       }
     }
 
@@ -1582,31 +1577,45 @@
   const minContenedor = document.getElementById('miniaturas');
   const fotoPrincipal = document.getElementById('foto-principal-modal');
   if (minContenedor && fotoPrincipal) {
-    const dedupObserver = new MutationObserver(() => {
-      const srcPrincipal = fotoPrincipal.src;
+    // Lógica de desduplicación de fotos
+    function limpiarMiniaturasDuplicadas() {
+      const srcPrincipal = fotoPrincipal.getAttribute('src');
       if (!srcPrincipal) return;
-      const minis = minContenedor.querySelectorAll('img.miniatura');
-      minis.forEach(m => {
-        // Comparar por src normalizado
-        const a = m.src.split('?')[0];
-        const b = srcPrincipal.split('?')[0];
-        if (a === b && minis.length > 1) m.parentElement ? m.parentElement.remove() : m.remove();
-      });
-    });
-    dedupObserver.observe(minContenedor, { childList: true, subtree: true });
 
-    // También observar cambios en la foto principal
-    const fotoObserver = new MutationObserver(() => {
-      const srcPrincipal = fotoPrincipal.src;
-      if (!srcPrincipal) return;
       const minis = minContenedor.querySelectorAll('img.miniatura');
+      
       minis.forEach(m => {
-        const a = m.src.split('?')[0];
-        const b = srcPrincipal.split('?')[0];
-        if (a === b && minis.length > 1) m.parentElement ? m.parentElement.remove() : m.remove();
+        const srcMini = m.getAttribute('src');
+        if (!srcMini) return;
+
+        // Comparamos el nombre final del archivo (ignorando rutas)
+        const nombrePrincipal = srcPrincipal.split('/').pop().split('?')[0];
+        const nombreMini = srcMini.split('/').pop().split('?')[0];
+
+        // Borramos la miniatura repetida siempre
+        if (nombrePrincipal === nombreMini) {
+          if (m.parentElement && m.parentElement !== minContenedor) {
+            m.parentElement.remove();
+          } else {
+            m.remove();
+          }
+        }
       });
-    });
-    fotoObserver.observe(fotoPrincipal, { attributes: true, attributeFilter: ['src'] });
+      
+      // Ocultar la barra de miniaturas si quedó vacía (es decir, si la joya solo tenía 1 foto)
+      if (minContenedor.children.length === 0) {
+        minContenedor.style.display = 'none';
+      } else {
+        minContenedor.style.display = ''; 
+      }
+    }
+
+    // Observadores unificados
+    const dedupObserver = new MutationObserver(limpiarMiniaturasDuplicadas);
+    if (minContenedor) dedupObserver.observe(minContenedor, { childList: true, subtree: true });
+
+    const fotoObserver = new MutationObserver(limpiarMiniaturasDuplicadas);
+    if (fotoPrincipal) fotoObserver.observe(fotoPrincipal, { attributes: true, attributeFilter: ['src'] });
   }
 
   /* ── TOAST CARRITO: escucha el botón de añadir si main.js no lo llama ── */
