@@ -957,6 +957,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      line-height: 1;
+      padding: 0;
     }
 
     /* ── BOTONES FLOTANTES ── */
@@ -1047,6 +1049,7 @@
     .item-mini-precio { font-size: 0.88rem; font-weight: 600; color: var(--oro); }
     .item-mini-cantidad { font-size: 0.72rem; color: var(--texto-dim); margin-top: 3px; }
     .btn-eliminar {
+      background: transparent;
       color: rgba(224,85,85,0.7);
       font-size: 0.68rem;
       text-decoration: underline;
@@ -1055,7 +1058,10 @@
       font-family: var(--font-body);
       transition: color 0.3s;
     }
-    .btn-eliminar:hover { color: #e05555; }
+    .btn-eliminar:hover { 
+      color: #e05555;
+      background: transparent;
+    }
     .carrito-footer {
       padding: 1.5rem 2rem;
       border-top: 1px solid var(--gris-borde);
@@ -1368,7 +1374,7 @@
       <a href="#catalogo">Colección</a>
       <a href="#inicio">Inicio</a>
     </div>
-    <p class="footer-copy">© 2025 Golden Manillas · Todos los derechos reservados</p>
+    <p class="footer-copy">© 2026 Golden Manillas · Todos los derechos reservados</p>
   </footer>
 
   <!-- ══════════════════════════════
