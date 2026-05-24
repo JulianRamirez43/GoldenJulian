@@ -159,29 +159,38 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
     .stat-card {
       background: var(--blanco);
       border-radius: var(--radio);
-      padding: 20px;
+      padding: 22px 20px;
       text-align: center;
       box-shadow: var(--sombra);
+      border-top: 3px solid transparent;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .stat-card:hover {
+      border-top-color: var(--oro);
+      transform: translateY(-2px);
     }
 
     .stat-card .stat-numero {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 600;
       color: var(--oro-oscuro);
+      font-family: var(--font-d);
+      line-height: 1;
     }
 
     .stat-card .stat-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--gris-2);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 4px;
+      letter-spacing: 0.12em;
+      margin-top: 6px;
     }
 
     /* ── TOOLBAR ───────────────────────────────────────── */
@@ -189,7 +198,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
       gap: 12px;
     }
@@ -200,6 +209,93 @@
       font-weight: 400;
       color: var(--negro);
     }
+
+    .toolbar-controles {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .busqueda-wrap {
+      position: relative;
+    }
+
+    .busqueda-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--gris-2);
+    }
+
+    .inp-busqueda {
+      padding: 9px 14px 9px 36px;
+      border: 1.5px solid var(--gris-3);
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-size: 0.88rem;
+      outline: none;
+      background: var(--blanco);
+      color: var(--gris-1);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 220px;
+    }
+
+    .inp-busqueda:focus {
+      border-color: var(--oro);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+    }
+
+    .btn-filtro-agotadas {
+      padding: 9px 16px;
+      border: 1.5px solid var(--gris-3);
+      border-radius: var(--radio);
+      font-family: var(--font-b);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: var(--blanco);
+      color: var(--gris-2);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn-filtro-agotadas:hover {
+      border-color: var(--rojo);
+      color: var(--rojo);
+      background: #fdecea;
+    }
+
+    .btn-filtro-agotadas.activo {
+      background: #fdecea;
+      border-color: var(--rojo);
+      color: var(--rojo);
+    }
+
+    .btn-filtro-agotadas .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .sin-resultados {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gris-2);
+    }
+
+    .sin-resultados svg {
+      margin: 0 auto 12px;
+      opacity: 0.35;
+    }
+
+    .sin-resultados p { font-size: 0.95rem; }
 
     .btn-nuevo {
       background: var(--oro);
@@ -212,6 +308,7 @@
       font-size: 0.9rem;
       cursor: pointer;
       transition: background 0.2s;
+      white-space: nowrap;
     }
 
     .btn-nuevo:hover { background: var(--oro-oscuro); }
@@ -259,10 +356,11 @@
     }
 
     .img-mini {
-      width: 52px;
-      height: 52px;
+      width: 72px;
+      height: 72px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
     }
 
     .badge {
@@ -333,6 +431,7 @@
       overflow-y: auto;
       position: relative;
       animation: slideUp 0.25s ease;
+      border-top: 4px solid var(--oro);
     }
 
     @keyframes slideUp {
@@ -414,12 +513,13 @@
 
     .preview-foto {
       width: 100%;
-      height: 140px;
+      aspect-ratio: 1 / 1;
       object-fit: cover;
       border-radius: var(--radio);
       margin-top: 8px;
       display: none;
       border: 1px solid var(--gris-3);
+      background: #f5f5f5;
     }
 
     .form-botones {
@@ -573,7 +673,16 @@
     <!-- Toolbar -->
     <div class="toolbar">
       <h2>Colección de Joyas</h2>
-      <button class="btn-nuevo" id="btn-nueva-joya">+ Nueva Joya</button>
+      <div class="toolbar-controles">
+        <div class="busqueda-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="inp-busqueda" class="inp-busqueda" type="text" placeholder="Buscar por nombre…">
+        </div>
+        <button id="btn-filtro-agotadas" class="btn-filtro-agotadas">
+          <span class="dot"></span> Solo agotadas
+        </button>
+        <button class="btn-nuevo" id="btn-nueva-joya">+ Nueva Joya</button>
+      </div>
     </div>
 
     <!-- Tabla -->
@@ -757,7 +866,7 @@ async function cargarJoyas() {
   joyas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
   actualizarStats();
-  renderTabla();
+  aplicarFiltros();
 
   document.getElementById('cargando-tabla').style.display = 'none';
   document.getElementById('tabla-joyas').style.display    = 'table';
@@ -770,23 +879,37 @@ function actualizarStats() {
   document.getElementById('stat-agotadas').textContent    = joyas.length - disponibles;
 }
 
-function renderTabla() {
+function renderTabla(filtroNombre = '', soloAgotadas = false) {
   const tbody = document.getElementById('tbody-joyas');
   tbody.innerHTML = '';
 
-  if (joyas.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#888">
-      No hay joyas. ¡Agrega la primera!
+  let lista = joyas;
+
+  if (soloAgotadas) {
+    lista = lista.filter(j => j.disponible === false);
+  }
+
+  if (filtroNombre.trim()) {
+    const q = filtroNombre.trim().toLowerCase();
+    lista = lista.filter(j => (j.nombre || '').toLowerCase().includes(q));
+  }
+
+  if (lista.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="sin-resultados">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <p>${joyas.length === 0 ? 'No hay joyas. ¡Agrega la primera!' : 'Sin resultados para tu búsqueda.'}</p>
+      </div>
     </td></tr>`;
     return;
   }
 
-  joyas.forEach(joya => {
+  lista.forEach(joya => {
     const disponible = joya.disponible !== false;
     const cats = Array.isArray(joya.categorias) ? joya.categorias.join(', ') : '—';
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><img class="img-mini" src="${joya.foto_principal || ''}" alt="${joya.nombre}" onerror="this.src='https://placehold.co/52x52/f9f5eb/b8860b?text=?'"></td>
+      <td><img class="img-mini" src="${joya.foto_principal || ''}" alt="${joya.nombre}" onerror="this.src='https://placehold.co/72x72/f9f5eb/b8860b?text=?'"></td>
       <td><strong>${joya.nombre}</strong></td>
       <td style="font-size:0.8rem;color:#666">${cats}</td>
       <td>$${(joya.precio || 0).toLocaleString('es-CO')}</td>
@@ -813,6 +936,29 @@ function renderTabla() {
     btn.addEventListener('click', () => abrirConfirmEliminar(btn.dataset.id))
   );
 }
+
+// ── Búsqueda y filtro agotadas ──────────────────────────
+let soloAgotadas = false;
+
+function getFilters() {
+  return {
+    nombre: document.getElementById('inp-busqueda').value,
+    soloAgotadas,
+  };
+}
+
+function aplicarFiltros() {
+  const { nombre, soloAgotadas: ag } = getFilters();
+  renderTabla(nombre, ag);
+}
+
+document.getElementById('inp-busqueda').addEventListener('input', aplicarFiltros);
+
+document.getElementById('btn-filtro-agotadas').addEventListener('click', () => {
+  soloAgotadas = !soloAgotadas;
+  document.getElementById('btn-filtro-agotadas').classList.toggle('activo', soloAgotadas);
+  aplicarFiltros();
+});
 
 // ── Formulario ───────────────────────────────────────────
 const overlayForm = document.getElementById('overlay-form');
