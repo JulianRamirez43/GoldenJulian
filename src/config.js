@@ -34,7 +34,7 @@ export const CONFIG = {
     { grupo: 'JOYAS',      valor: 'anillo',    label: 'ANILLOS'          },
     { grupo: 'JOYAS',      valor: 'topos',     label: 'TOPOS'            },
     { grupo: 'MATERIALES', valor: 'oro',       label: 'ORO 18K'          },
-    { grupo: 'MATERIALES', valor: 'laminado',  label: 'ORO LAMINADO 18K' },
+    /* { grupo: 'MATERIALES', valor: 'laminado',  label: 'ORO LAMINADO 18K' }, */
     { grupo: 'MATERIALES', valor: 'plata',     label: 'PLATA'            },
     { grupo: 'MATERIALES', valor: 'neopreno',  label: 'NEOPRENO'         },
   ],
