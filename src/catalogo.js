@@ -47,7 +47,10 @@ export function dibujarJoyas(lista) {
       <div class="tarjeta-img-wrap">
         <img src="${foto}" alt="${joya.nombre}" loading="lazy">
         <div class="tarjeta-overlay"><span>Ver detalles</span></div>
-        ${agotada ? '<div class="badge-agotado-tarjeta">Agotado</div>' : ''}
+        ${agotada ? `
+          <div class="badge-agotado-tarjeta">Agotado</div>
+          <div class="badge-bajo-pedido-tarjeta">Bajo pedido</div>
+        ` : ''}
       </div>
       <div class="info-joya">
         <h3>${joya.nombre}</h3>
